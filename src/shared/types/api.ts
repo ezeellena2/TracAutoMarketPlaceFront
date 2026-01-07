@@ -1,69 +1,111 @@
 /**
  * DTOs públicos del Marketplace
  * Alineados con el backend TracAuto (endpoints públicos)
+ * Fuente: TracAuto.Application.Marketplace.Public.DTOs
  */
 
-// ==================== Marketplace Público DTOs ====================
+// ==================== Vendedor/Concesionaria ====================
 
 /**
- * Estados posibles de una publicación en el marketplace
+ * Información resumida del vendedor (concesionaria)
+ * Fuente: VendedorResumenDto.cs
  */
-export enum EstadoPublicacion {
-  Borrador = 1,
-  Publicado = 2,
-  Pausado = 3,
-  Vendido = 4,
+export interface VendedorResumenDto {
+  /** ID de la concesionaria */
+  id: string;
+  /** Nombre comercial */
+  nombre: string;
+  /** Slug para URLs (SEO) */
+  slug: string | null;
 }
 
 /**
- * DTO de vehículo publicado en el marketplace (vista pública)
- * Solo incluye información visible para usuarios no autenticados
+ * Información de contacto público
+ * Fuente: ContactoPublicoDto.cs
  */
-export interface VehiculoPublicadoDto {
+export interface ContactoPublicoDto {
+  /** Nombre del contacto */
+  nombre: string;
+  /** Teléfono de contacto */
+  telefono: string;
+  /** Email de contacto */
+  email: string;
+}
+
+// ==================== Publicaciones ====================
+
+/**
+ * DTO de publicación para listados del marketplace
+ * Fuente: PublicacionPublicaDto.cs
+ */
+export interface PublicacionPublicaDto {
   /** ID de la publicación */
-  publicacionId: string;
-  /** Patente del vehículo */
-  patente: string;
+  id: string;
   /** Marca del vehículo */
-  marca: string | null;
+  marca: string;
   /** Modelo del vehículo */
-  modelo: string | null;
-  /** Año de fabricación */
+  modelo: string;
+  /** Año del vehículo */
   anio: number | null;
-  /** Precio de venta */
+  /** Precio de venta (null = consultar) */
   precio: number | null;
-  /** Moneda del precio (ARS, USD, etc) */
+  /** Moneda del precio (ISO 4217) */
   moneda: string;
-  /** Kilometraje */
+  /** Kilometraje reportado */
   kilometraje: number;
-  /** Descripción de la publicación */
-  descripcion: string | null;
-  /** Estado de la publicación */
-  estado: EstadoPublicacion;
+  /** Indica si es publicación destacada */
+  destacado: boolean;
   /** Fecha de publicación (ISO 8601) */
   fechaPublicacion: string;
-  /** URL de imagen principal (opcional) */
-  imagenUrl: string | null;
-  /** Nombre de la concesionaria (público) */
-  concesionariaNombre: string;
-  /** Ubicación (ciudad/provincia) */
-  ubicacion: string | null;
+  /** URL de imagen de portada */
+  imagenPortadaUrl: string | null;
+  /** Información del vendedor */
+  vendedor: VendedorResumenDto;
 }
 
 /**
- * DTO de detalle de vehículo publicado (vista pública)
- * Información extendida para la página de detalle
+ * DTO de detalle de publicación (página de detalle)
+ * Fuente: PublicacionPublicaDetalleDto.cs
  */
-export interface VehiculoDetallePublicoDto extends VehiculoPublicadoDto {
-  /** Lista de URLs de imágenes adicionales */
-  imagenes: string[];
-  /** Información de contacto de la concesionaria */
-  contacto: {
-    telefono: string | null;
-    email: string | null;
-    whatsapp: string | null;
-  };
+export interface PublicacionPublicaDetalleDto {
+  /** ID de la publicación */
+  id: string;
+  /** Marca del vehículo */
+  marca: string;
+  /** Modelo del vehículo */
+  modelo: string;
+  /** Año del vehículo */
+  anio: number | null;
+  /** Precio de venta (null = consultar) */
+  precio: number | null;
+  /** Moneda del precio (ISO 4217) */
+  moneda: string;
+  /** Kilometraje reportado */
+  kilometraje: number;
+  /** Descripción detallada */
+  descripcion: string | null;
+  /** Indica si es publicación destacada */
+  destacado: boolean;
+  /** Fecha de publicación (ISO 8601) */
+  fechaPublicacion: string;
+  /** URL de imagen de portada */
+  imagenPortadaUrl: string | null;
+  /** URLs de imágenes adicionales */
+  imagenesUrls: string[];
+  /** Información del vendedor */
+  vendedor: VendedorResumenDto;
+  /** Información de contacto */
+  contacto: ContactoPublicoDto;
 }
+
+// ==================== Alias de compatibilidad ====================
+// Para facilitar migración gradual del código existente
+
+/** @deprecated Usar PublicacionPublicaDto */
+export type VehiculoPublicadoDto = PublicacionPublicaDto;
+
+/** @deprecated Usar PublicacionPublicaDetalleDto */
+export type VehiculoDetallePublicoDto = PublicacionPublicaDetalleDto;
 
 // ==================== Paginación ====================
 

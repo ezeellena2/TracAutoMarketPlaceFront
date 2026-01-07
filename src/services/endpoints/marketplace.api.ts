@@ -1,7 +1,7 @@
 import { publicApiClient } from '../http/publicApiClient';
 import type {
-  VehiculoPublicadoDto,
-  VehiculoDetallePublicoDto,
+  PublicacionPublicaDto,
+  PublicacionPublicaDetalleDto,
   ListaPaginada,
   FiltrosVehiculo,
 } from '@/shared/types/api';
@@ -11,15 +11,19 @@ const BASE_URL = 'marketplace';
 /**
  * API pública del Marketplace de vehículos
  * Endpoints sin autenticación para usuarios públicos
+ * 
+ * Rutas backend:
+ * - GET /api/public/v1/marketplace/vehiculos
+ * - GET /api/public/v1/marketplace/vehiculos/{id}
  */
 export const marketplaceApi = {
   /**
    * Obtiene la lista paginada de vehículos publicados
-   * GET /api/public/v1/marketplace/vehicles
+   * GET /api/public/v1/marketplace/vehiculos
    */
   obtenerVehiculos: async (
     filtros?: FiltrosVehiculo
-  ): Promise<ListaPaginada<VehiculoPublicadoDto>> => {
+  ): Promise<ListaPaginada<PublicacionPublicaDto>> => {
     const params = new URLSearchParams();
 
     if (filtros?.numeroPagina) {
@@ -34,45 +38,66 @@ export const marketplaceApi = {
     if (filtros?.modelo) {
       params.append('modelo', filtros.modelo);
     }
+    // Backend usa anioMinimo/anioMaximo
     if (filtros?.anioDesde) {
-      params.append('anioDesde', filtros.anioDesde.toString());
+      params.append('anioMinimo', filtros.anioDesde.toString());
     }
     if (filtros?.anioHasta) {
-      params.append('anioHasta', filtros.anioHasta.toString());
+      params.append('anioMaximo', filtros.anioHasta.toString());
     }
+    // Backend usa precioMinimo/precioMaximo
     if (filtros?.precioDesde) {
-      params.append('precioDesde', filtros.precioDesde.toString());
+      params.append('precioMinimo', filtros.precioDesde.toString());
     }
     if (filtros?.precioHasta) {
-      params.append('precioHasta', filtros.precioHasta.toString());
+      params.append('precioMaximo', filtros.precioHasta.toString());
     }
-    if (filtros?.kilometrajeHasta) {
-      params.append('kilometrajeHasta', filtros.kilometrajeHasta.toString());
-    }
+    // Backend usa 'ordenar' con valores: precio_asc, precio_desc, fecha_desc, km_asc, anio_desc
     if (filtros?.ordenarPor) {
-      params.append('ordenarPor', filtros.ordenarPor);
-    }
-    if (filtros?.descendente !== undefined) {
-      params.append('descendente', filtros.descendente.toString());
+      const ordenBackend = mapearOrdenamiento(filtros.ordenarPor, filtros.descendente);
+      if (ordenBackend) {
+        params.append('ordenar', ordenBackend);
+      }
     }
 
     const query = params.toString();
-    const url = query ? `${BASE_URL}/vehicles?${query}` : `${BASE_URL}/vehicles`;
+    const url = query ? `${BASE_URL}/vehiculos?${query}` : `${BASE_URL}/vehiculos`;
 
-    const response = await publicApiClient.get<ListaPaginada<VehiculoPublicadoDto>>(url);
+    const response = await publicApiClient.get<ListaPaginada<PublicacionPublicaDto>>(url);
     return response.data;
   },
 
   /**
    * Obtiene el detalle de un vehículo publicado
-   * GET /api/public/v1/marketplace/vehicles/{id}
+   * GET /api/public/v1/marketplace/vehiculos/{id}
    */
   obtenerVehiculoPorId: async (
     publicacionId: string
-  ): Promise<VehiculoDetallePublicoDto> => {
-    const response = await publicApiClient.get<VehiculoDetallePublicoDto>(
-      `${BASE_URL}/vehicles/${publicacionId}`
+  ): Promise<PublicacionPublicaDetalleDto> => {
+    const response = await publicApiClient.get<PublicacionPublicaDetalleDto>(
+      `${BASE_URL}/vehiculos/${publicacionId}`
     );
     return response.data;
   },
 };
+
+/**
+ * Mapea ordenamiento del frontend al formato del backend
+ */
+function mapearOrdenamiento(
+  campo: string,
+  descendente?: boolean
+): string | null {
+  switch (campo) {
+    case 'precio':
+      return descendente ? 'precio_desc' : 'precio_asc';
+    case 'anio':
+      return 'anio_desc'; // Backend solo soporta desc para año
+    case 'kilometraje':
+      return 'km_asc'; // Backend solo soporta asc para km
+    case 'fechaPublicacion':
+      return 'fecha_desc';
+    default:
+      return null;
+  }
+}
