@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Gauge, MapPin, Phone, Mail, MessageCircle, Building2 } from 'lucide-react';
-import { SpinnerPantalla, EstadoError, Button, Card, CardContent } from '@/shared/ui';
+import { ArrowLeft, Calendar, Gauge, Phone, Mail, Building2, Star } from 'lucide-react';
+import { SpinnerPantalla, EstadoError, Card, CardContent } from '@/shared/ui';
 import { useVehiculoDetalle } from '@/features/catalogo';
 import { formatearPrecio, formatearKilometraje, formatearFecha } from '@/features/catalogo/utils/formatters';
 
@@ -27,7 +27,12 @@ export function DetallePage() {
     );
   }
 
-  const titulo = [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ') || vehiculo.patente;
+  const titulo = [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ') || 'Vehículo';
+
+  // Verificar si hay información de contacto disponible
+  const tieneContacto = vehiculo.contacto && (
+    vehiculo.contacto.telefono || vehiculo.contacto.email
+  );
 
   return (
     <div className="container-app py-6 sm:py-8">
@@ -46,9 +51,9 @@ export function DetallePage() {
           {/* Imagen principal */}
           <Card>
             <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-xl">
-              {vehiculo.imagenUrl ? (
+              {vehiculo.imagenPortadaUrl ? (
                 <img
-                  src={vehiculo.imagenUrl}
+                  src={vehiculo.imagenPortadaUrl}
                   alt={titulo}
                   className="w-full h-full object-cover"
                 />
@@ -57,13 +62,19 @@ export function DetallePage() {
                   Sin imagen
                 </div>
               )}
+              {vehiculo.destacado && (
+                <span className="absolute top-4 right-4 bg-primary text-white text-sm px-3 py-1 rounded-full flex items-center gap-1">
+                  <Star className="w-4 h-4" />
+                  Destacado
+                </span>
+              )}
             </div>
 
             {/* Galería de imágenes adicionales */}
-            {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
+            {vehiculo.imagenesUrls && vehiculo.imagenesUrls.length > 0 && (
               <div className="p-4 border-t border-border">
                 <div className="flex gap-2 overflow-x-auto pb-2">
-                  {vehiculo.imagenes.map((img, idx) => (
+                  {vehiculo.imagenesUrls.map((img, idx) => (
                     <img
                       key={idx}
                       src={img}
@@ -107,15 +118,6 @@ export function DetallePage() {
                     <p className="font-medium text-text">{formatearKilometraje(vehiculo.kilometraje)}</p>
                   </div>
                 </div>
-                {vehiculo.ubicacion && (
-                  <div className="flex items-center gap-2 text-text-muted">
-                    <MapPin className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-xs text-text-muted">Ubicación</p>
-                      <p className="font-medium text-text">{vehiculo.ubicacion}</p>
-                    </div>
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -127,8 +129,7 @@ export function DetallePage() {
           <Card>
             <CardContent>
               <h1 className="text-2xl font-bold text-text mb-2">{titulo}</h1>
-              <p className="text-sm text-text-muted mb-4">{vehiculo.patente}</p>
-              <p className="text-3xl font-bold text-primary">
+              <p className="text-3xl font-bold text-primary mt-4">
                 {formatearPrecio(vehiculo.precio, vehiculo.moneda)}
               </p>
               <p className="text-xs text-text-muted mt-2">
@@ -142,7 +143,7 @@ export function DetallePage() {
             <CardContent>
               <div className="flex items-center gap-2 mb-4">
                 <Building2 className="w-5 h-5 text-primary" />
-                <h2 className="font-semibold text-text">{vehiculo.concesionariaNombre}</h2>
+                <h2 className="font-semibold text-text">{vehiculo.vendedor.nombre}</h2>
               </div>
 
               <div className="space-y-3">
@@ -166,21 +167,7 @@ export function DetallePage() {
                   </a>
                 )}
 
-                {vehiculo.contacto?.whatsapp && (
-                  <a
-                    href={`https://wa.me/${vehiculo.contacto.whatsapp.replace(/\D/g, '')}?text=Hola! Me interesa el vehículo ${titulo} publicado en TracAuto Marketplace.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button variante="primario" className="w-full">
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      Contactar por WhatsApp
-                    </Button>
-                  </a>
-                )}
-
-                {!vehiculo.contacto?.telefono && !vehiculo.contacto?.email && !vehiculo.contacto?.whatsapp && (
+                {!tieneContacto && (
                   <p className="text-text-muted text-sm text-center py-4">
                     Información de contacto no disponible
                   </p>
