@@ -82,7 +82,11 @@ export const marketplaceApi = {
 };
 
 /**
- * Mapea ordenamiento del frontend al formato del backend
+ * Translate a frontend sort field and direction into the backend's sort string.
+ *
+ * @param campo - Frontend sort field name (e.g., "precio", "anio", "kilometraje", "fechaPublicacion")
+ * @param descendente - When `true`, request descending order; when `false` or omitted, request ascending where supported
+ * @returns The backend sort string (e.g., "precio_desc", "precio_asc", "anio_desc", "km_asc", "fecha_desc") or `null` if the requested field/direction is not supported by the backend
  */
 function mapearOrdenamiento(
   campo: string,
