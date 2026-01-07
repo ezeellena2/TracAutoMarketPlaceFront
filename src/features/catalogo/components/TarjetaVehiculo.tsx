@@ -8,6 +8,16 @@ interface TarjetaVehiculoProps {
   vehiculo: PublicacionPublicaDto;
 }
 
+/**
+ * Renders a clickable vehicle card showing image, title, price, key details, and seller.
+ *
+ * Displays the vehicle's cover image, a title derived from brand and model (or "Vehículo" if absent),
+ * the formatted price, year (if available), and formatted mileage. If `vehiculo.destacado` is truthy,
+ * a "Destacado" badge is shown. Clicking the card navigates to the vehicle detail route `/vehiculo/{id}`.
+ *
+ * @param vehiculo - The public vehicle publication to render (data used: id, marca, modelo, imagenPortadaUrl, precio, moneda, anio, kilometraje, vendedor.nombre, destacado)
+ * @returns A React element representing the vehicle card
+ */
 export function TarjetaVehiculo({ vehiculo }: TarjetaVehiculoProps) {
   const navigate = useNavigate();
 

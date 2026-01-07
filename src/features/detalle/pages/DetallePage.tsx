@@ -4,6 +4,15 @@ import { SpinnerPantalla, EstadoError, Card, CardContent } from '@/shared/ui';
 import { useVehiculoDetalle } from '@/features/catalogo';
 import { formatearPrecio, formatearKilometraje, formatearFecha } from '@/features/catalogo/utils/formatters';
 
+/**
+ * Render the vehicle detail page for the vehicle id extracted from the route parameters.
+ *
+ * Displays a loading spinner while fetching, an error state with retry on failure, and the full
+ * vehicle details (images, description, specs, price, publication date, and contact info)
+ * when data is available.
+ *
+ * @returns The component's JSX element rendering the vehicle detail page and its loading/error states.
+ */
 export function DetallePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
