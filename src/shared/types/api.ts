@@ -158,6 +158,7 @@ export interface FiltrosVehiculo extends PaginacionParams {
 
 /**
  * Formato de error del backend (ProblemDetails RFC 7807)
+ * Con extensiones TracAuto para correlación de errores
  */
 export interface ProblemDetails {
   type?: string;
@@ -165,6 +166,9 @@ export interface ProblemDetails {
   status: number;
   detail: string;
   instance?: string;
+  // TracAuto extensions
   code?: string;
+  traceId?: string;
+  timestamp?: string;
   [key: string]: unknown;
 }

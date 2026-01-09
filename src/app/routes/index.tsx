@@ -1,9 +1,12 @@
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { MainLayout } from '@/app/layouts';
 
 // Features
 import { CatalogoPage } from '@/features/catalogo';
 import { DetallePage } from '@/features/detalle';
+
+// Error pages
+import { NotFoundPage } from '@/shared/pages';
 
 const router = createBrowserRouter([
   {
@@ -22,7 +25,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate to="/" replace />,
+    element: <NotFoundPage />,
   },
 ]);
 

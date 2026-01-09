@@ -1,0 +1,98 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "retry": "Reintentar",
+    "goBack": "Volver",
+    "goHome": "Ir al Catálogo",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "offline": "Sin conexión",
+    "online": "Conectado",
+    "reconnecting": "Reconectando..."
+  },
+  "errorPages": {
+    "notFound": {
+      "title": "Página no encontrada",
+      "message": "La página que buscás no existe o fue movida."
+    },
+    "serverError": {
+      "title": "Error del servidor",
+      "message": "Ocurrió un error inesperado. Intente nuevamente más tarde."
+    },
+    "referenceId": "ID de referencia",
+    "referenceHint": "Usá este código si contactás a soporte"
+  },
+  "offline": {
+    "title": "Sin conexión",
+    "message": "No hay conexión a internet. Algunas funciones no están disponibles.",
+    "dismiss": "Entendido"
+  },
+  "rateLimit": {
+    "title": "Demasiadas solicitudes",
+    "message": "Por favor esperá {{seconds}} segundos antes de intentar nuevamente.",
+    "retryIn": "Reintentar en {{seconds}}s"
+  },
+  "errors": {
+    "unexpected": "Ha ocurrido un error inesperado",
+    "network": "Error de conexión. Verifique su conexión a internet",
+    "timeout": "La solicitud tardó demasiado. Intente nuevamente",
+    "notFound": "Recurso no encontrado",
+    "serverError": "Error interno del servidor",
+    "serviceUnavailable": "Servicio no disponible temporalmente",
+    "tooManyRequests": "Demasiadas solicitudes. Intente nuevamente en {{retryAfter}} segundos",
+    "badRequest": "Solicitud inválida",
+    
+    "Marketplace.PublicacionNoEncontrada": "La publicación no fue encontrada",
+    "Marketplace.VehiculoNoPublicado": "El vehículo no está disponible",
+    "Marketplace.VehiculoNoEncontrado": "El vehículo no fue encontrado",
+    "Marketplace.NoDisponible": "El vehículo ya no está disponible",
+    "Marketplace.SinPublicaciones": "No hay vehículos publicados en este momento",
+    
+    "General.ErrorInterno": "Ha ocurrido un error interno",
+    "General.OperacionCancelada": "La operación fue cancelada",
+    "Seguridad.OperacionCancelada": "La operación fue cancelada",
+    
+    "Validation.Required": "Este campo es requerido",
+    "Validation.InvalidFormat": "Formato inválido"
+  },
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "message": "Ocurrió un error inesperado. Podés intentar recargar la página o volver al catálogo.",
+    "referenceId": "ID de referencia",
+    "referenceHint": "Usá este código si contactás a soporte",
+    "retry": "Reintentar",
+    "goHome": "Ir al Catálogo",
+    "reportProblem": "Reportar problema",
+    "technicalDetails": "Ver detalles técnicos",
+    "ticketTitle": "Ticket (próximamente)",
+    "ticketMessage": "Esta función se conectará próximamente a Jira."
+  },
+  "catalog": {
+    "title": "Catálogo de Vehículos",
+    "subtitle": "Explorá nuestra selección de vehículos disponibles",
+    "filters": "Filtros",
+    "sortBy": "Ordenar por",
+    "priceAsc": "Menor precio",
+    "priceDesc": "Mayor precio",
+    "newest": "Más recientes",
+    "noVehicles": "No hay vehículos disponibles",
+    "noVehiclesHint": "Volvé más tarde para ver nuevas publicaciones"
+  },
+  "vehicle": {
+    "year": "Año",
+    "mileage": "Kilometraje",
+    "price": "Precio",
+    "contact": "Contactar",
+    "details": "Ver detalles",
+    "notAvailable": "No disponible"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "poweredBy": "Desarrollado por TracAuto"
+  }
+}

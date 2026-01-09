@@ -5,3 +5,6 @@ export { Card, CardImage, CardContent } from './Card';
 export { Button } from './Button';
 export { EstadoVacio } from './EstadoVacio';
 export { EstadoError } from './EstadoError';
+export { ErrorBoundary } from './ErrorBoundary';
+export { OfflineIndicator } from './OfflineIndicator';
+export { RateLimitCountdown } from './RateLimitCountdown';
