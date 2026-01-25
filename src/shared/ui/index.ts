@@ -8,3 +8,4 @@ export { EstadoError } from './EstadoError';
 export { ErrorBoundary } from './ErrorBoundary';
 export { OfflineIndicator } from './OfflineIndicator';
 export { RateLimitCountdown } from './RateLimitCountdown';
+export { PageLoader } from './PageLoader';

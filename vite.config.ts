@@ -5,6 +5,32 @@ import { fileURLToPath, URL } from 'node:url';
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Optimización de dependencias para desarrollo más rápido
+  // Ref: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
+  optimizeDeps: {
+    include: [
+      'lucide-react',
+      '@tanstack/react-query',
+      'zustand',
+      'axios',
+      'react-router-dom',
+      'i18next',
+      'react-i18next',
+    ],
+  },
+  // Configuración de build para mejor code-splitting
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-ui': ['lucide-react'],
+          'vendor-i18n': ['i18next', 'react-i18next'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     VitePWA({
