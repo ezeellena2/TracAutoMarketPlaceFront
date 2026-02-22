@@ -2,16 +2,20 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { SpinnerPantalla, EstadoVacio, EstadoError } from '@/shared/ui';
 import { useVehiculos } from '../hooks/useVehiculos';
+import { useConcesionarias } from '../hooks/useConcesionarias';
 import { GrillaVehiculos } from '../components/GrillaVehiculos';
 import type { FiltrosVehiculo } from '@/shared/types';
+import { useTranslation } from 'react-i18next';
 
 export function CatalogoPage() {
+  const { t } = useTranslation();
   const [filtros, setFiltros] = useState<FiltrosVehiculo>({
     numeroPagina: 1,
     tamanoPagina: 12,
   });
 
   const { data, isLoading, isError, error, refetch } = useVehiculos(filtros);
+  const { data: concesionarias, isLoading: isLoadingConcesionarias } = useConcesionarias();
 
   // Estado de carga
   if (isLoading) {
@@ -38,22 +42,22 @@ export function CatalogoPage() {
       {/* Encabezado */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-text mb-2">
-          Vehículos en venta
+          {t('catalog.title')}
         </h1>
         <p className="text-text-muted">
           {totalRegistros > 0
-            ? `${totalRegistros} vehículo${totalRegistros !== 1 ? 's' : ''} disponible${totalRegistros !== 1 ? 's' : ''}`
-            : 'Explorá nuestro catálogo de vehículos'}
+            ? t('catalog.availableCount', { count: totalRegistros })
+            : t('catalog.subtitle')}
         </p>
       </div>
 
-      {/* Barra de búsqueda (preparada para filtros futuros) */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
+      {/* Barra de búsqueda y filtros */}
+      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             type="text"
-            placeholder="Buscar por marca o modelo..."
+            placeholder={t('catalog.searchPlaceholder')}
             className="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-lg text-text placeholder:text-text-muted focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
             onChange={(e) => {
               const valor = e.target.value.trim();
@@ -64,6 +68,30 @@ export function CatalogoPage() {
               }));
             }}
           />
+        </div>
+
+        {/* Filtro por concesionaria */}
+        <div className="w-full sm:w-64">
+          <select
+            className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50"
+            value={filtros.concesionariaId || ''}
+            onChange={(e) => {
+              const valor = e.target.value;
+              setFiltros((prev) => ({
+                ...prev,
+                concesionariaId: valor || undefined,
+                numeroPagina: 1,
+              }));
+            }}
+            disabled={isLoadingConcesionarias}
+          >
+            <option value="">{t('catalog.allDealers', { defaultValue: 'Todas las concesionarias' })}</option>
+            {concesionarias?.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nombre}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -83,10 +111,10 @@ export function CatalogoPage() {
                 disabled={filtros.numeroPagina === 1}
                 className="px-4 py-2 border border-border rounded-lg text-text-muted hover:text-text hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Anterior
+                {t('common.previous')}
               </button>
               <span className="px-4 py-2 text-text-muted">
-                Página {data.paginaActual} de {data.totalPaginas}
+                {t('common.pageIndicator', { current: data.paginaActual, total: data.totalPaginas })}
               </span>
               <button
                 onClick={() => setFiltros((prev) => ({
@@ -96,15 +124,15 @@ export function CatalogoPage() {
                 disabled={filtros.numeroPagina === data.totalPaginas}
                 className="px-4 py-2 border border-border rounded-lg text-text-muted hover:text-text hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Siguiente
+                {t('common.next')}
               </button>
             </div>
           )}
         </>
       ) : (
         <EstadoVacio
-          titulo="No hay vehículos disponibles"
-          descripcion="Por el momento no hay vehículos publicados. Volvé pronto para ver las nuevas publicaciones."
+          titulo={t('catalog.noVehicles')}
+          descripcion={t('catalog.noVehiclesHint')}
         />
       )}
     </div>

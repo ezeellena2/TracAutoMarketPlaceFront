@@ -13,7 +13,10 @@
     "copied": "Copiado",
     "offline": "Sin conexión",
     "online": "Conectado",
-    "reconnecting": "Reconectando..."
+    "reconnecting": "Reconectando...",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "pageIndicator": "Página {{current}} de {{total}}"
   },
   "errorPages": {
     "notFound": {
@@ -46,17 +49,14 @@
     "serviceUnavailable": "Servicio no disponible temporalmente",
     "tooManyRequests": "Demasiadas solicitudes. Intente nuevamente en {{retryAfter}} segundos",
     "badRequest": "Solicitud inválida",
-    
     "Marketplace.PublicacionNoEncontrada": "La publicación no fue encontrada",
     "Marketplace.VehiculoNoPublicado": "El vehículo no está disponible",
     "Marketplace.VehiculoNoEncontrado": "El vehículo no fue encontrado",
     "Marketplace.NoDisponible": "El vehículo ya no está disponible",
     "Marketplace.SinPublicaciones": "No hay vehículos publicados en este momento",
-    
     "General.ErrorInterno": "Ha ocurrido un error interno",
     "General.OperacionCancelada": "La operación fue cancelada",
     "Seguridad.OperacionCancelada": "La operación fue cancelada",
-    
     "Validation.Required": "Este campo es requerido",
     "Validation.InvalidFormat": "Formato inválido"
   },
@@ -68,6 +68,10 @@
     "retry": "Reintentar",
     "goHome": "Ir al Catálogo",
     "reportProblem": "Reportar problema",
+    "reportSending": "Enviando reporte...",
+    "reportSent": "Reporte enviado. Ticket creado en Jira:",
+    "reportError": "No se pudo enviar el reporte. Usá el ID de referencia para contactar a soporte.",
+    "viewTicket": "Ver ticket",
     "technicalDetails": "Ver detalles técnicos",
     "ticketTitle": "Ticket (próximamente)",
     "ticketMessage": "Esta función se conectará próximamente a Jira."
@@ -81,7 +85,11 @@
     "priceDesc": "Mayor precio",
     "newest": "Más recientes",
     "noVehicles": "No hay vehículos disponibles",
-    "noVehiclesHint": "Volvé más tarde para ver nuevas publicaciones"
+    "noVehiclesHint": "Por el momento no hay vehículos publicados. Volvé pronto para ver las nuevas publicaciones.",
+    "searchPlaceholder": "Buscar por marca o modelo...",
+    "availableCount": "{{count}} vehículo disponible",
+    "availableCount_plural": "{{count}} vehículos disponibles",
+    "availableCount_0": "Explorá nuestro catálogo de vehículos"
   },
   "vehicle": {
     "year": "Año",
@@ -89,7 +97,16 @@
     "price": "Precio",
     "contact": "Contactar",
     "details": "Ver detalles",
-    "notAvailable": "No disponible"
+    "notAvailable": "No disponible",
+    "backToCatalog": "Volver al catálogo",
+    "noImage": "Sin imagen",
+    "featured": "Destacado",
+    "description": "Descripción",
+    "noDescription": "Sin descripción disponible.",
+    "features": "Características",
+    "publishedOn": "Publicado el {{date}}",
+    "whatsapp": "WhatsApp",
+    "contactNotAvailable": "Información de contacto no disponible"
   },
   "footer": {
     "rights": "Todos los derechos reservados",

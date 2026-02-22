@@ -3,12 +3,14 @@
  * Evita que un error en un componente rompa toda la aplicación.
  * 
  * Versión para el marketplace público con soporte i18n.
+ * "Reportar problema" envía el error a Jira como Bug.
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home, Ticket, Copy, Check } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home, Ticket, Copy, Check, ExternalLink } from 'lucide-react';
 import { Button } from './Button';
 import i18n from '@/shared/i18n';
+import { reportarError } from '@/services/endpoints/support.api';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -22,6 +24,9 @@ interface ErrorBoundaryState {
   errorId: string;
   timestamp: string;
   copied: boolean;
+  reportSending: boolean;
+  reportSuccess: { key: string; url: string } | null;
+  reportError: string | null;
 }
 
 // Genera un ID corto para el error
@@ -36,7 +41,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       hasError: false,
       errorId: '',
       timestamp: '',
-      copied: false
+      copied: false,
+      reportSending: false,
+      reportSuccess: null,
+      reportError: null,
     };
   }
 
@@ -66,7 +74,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       error: undefined,
       errorId: '',
       timestamp: '',
-      copied: false
+      copied: false,
+      reportSending: false,
+      reportSuccess: null,
+      reportError: null,
     });
   };
 
@@ -84,24 +95,24 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
   };
 
-  handleCreateTicket = (): void => {
-    const ticketData = {
-      errorId: this.state.errorId,
-      timestamp: this.state.timestamp,
-      message: this.state.error?.message,
-      url: window.location.href,
-      userAgent: navigator.userAgent
-    };
-    
-    console.log('[ErrorBoundary] Crear ticket con datos:', ticketData);
-    
-    // TODO: Integrar con Jira/sistema de tickets
-    alert(
-      `🎫 ${i18n.t('errorBoundary.ticketTitle')}\n\n` +
-      `${i18n.t('errorBoundary.referenceId')}: ${this.state.errorId}\n` +
-      `Error: ${this.state.error?.message}\n\n` +
-      i18n.t('errorBoundary.ticketMessage')
-    );
+  handleCreateTicket = async (): Promise<void> => {
+    if (this.state.reportSending || this.state.reportSuccess) return;
+    this.setState({ reportSending: true, reportError: null });
+    try {
+      const result = await reportarError({
+        referenceId: this.state.errorId,
+        message: this.state.error?.message ?? '',
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: this.state.timestamp,
+      });
+      this.setState({ reportSending: false, reportSuccess: { key: result.key, url: result.url } });
+    } catch {
+      this.setState({
+        reportSending: false,
+        reportError: i18n.t('errorBoundary.reportError'),
+      });
+    }
   };
 
   render(): ReactNode {
@@ -187,13 +198,39 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </Button>
             </div>
 
+            {/* Mensaje de éxito al reportar */}
+            {this.state.reportSuccess && (
+              <div className="mb-4 p-3 bg-success/10 border border-success/30 rounded-lg text-sm text-text">
+                <p className="font-medium">{i18n.t('errorBoundary.reportSent')}</p>
+                <a
+                  href={this.state.reportSuccess.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 mt-1 text-primary hover:underline"
+                >
+                  {this.state.reportSuccess.key}
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            )}
+
+            {/* Mensaje de error al reportar */}
+            {this.state.reportError && (
+              <p className="mb-4 text-sm text-error">{this.state.reportError}</p>
+            )}
+
             {/* Botón de crear ticket */}
             <button
               onClick={this.handleCreateTicket}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 text-sm text-text-muted hover:text-text hover:bg-background rounded-lg transition-colors border border-transparent hover:border-border"
+              disabled={this.state.reportSending || !!this.state.reportSuccess}
+              className="w-full flex items-center justify-center gap-2 py-2 px-4 text-sm text-text-muted hover:text-text hover:bg-background rounded-lg transition-colors border border-transparent hover:border-border disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Ticket className="w-4 h-4" />
-              {i18n.t('errorBoundary.reportProblem')}
+              {this.state.reportSending
+                ? i18n.t('errorBoundary.reportSending')
+                : this.state.reportSuccess
+                  ? i18n.t('errorBoundary.viewTicket')
+                  : i18n.t('errorBoundary.reportProblem')}
             </button>
           </div>
         </div>

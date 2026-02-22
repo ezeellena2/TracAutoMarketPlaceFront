@@ -3,8 +3,10 @@ import { ArrowLeft, Calendar, Gauge, Phone, Mail, Building2, Star, MessageCircle
 import { SpinnerPantalla, EstadoError, Card, CardContent } from '@/shared/ui';
 import { useVehiculoDetalle } from '@/features/catalogo';
 import { formatearPrecio, formatearKilometraje, formatearFecha } from '@/features/catalogo/utils/formatters';
+import { useTranslation } from 'react-i18next';
 
 export function DetallePage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -20,14 +22,14 @@ export function DetallePage() {
     return (
       <div className="container-app py-8">
         <EstadoError
-          mensaje={error instanceof Error ? error.message : 'Vehículo no encontrado'}
+          mensaje={error instanceof Error ? error.message : t('vehicle.notFound')}
           onReintentar={() => refetch()}
         />
       </div>
     );
   }
 
-  const titulo = [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ') || 'Vehículo';
+  const titulo = [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ') || t('vehicle.defaultTitle');
 
   // Verificar si hay información de contacto disponible
   const tieneContacto = vehiculo.contacto && (
@@ -35,7 +37,7 @@ export function DetallePage() {
   );
   const telefonoWhatsApp = vehiculo.contacto?.telefono?.replace(/[^\d]/g, '');
   const mensajeWhatsApp = encodeURIComponent(
-    `Hola, estoy interesado en ${titulo}. ¿Sigue disponible? ${typeof window !== 'undefined' ? window.location.href : ''}`
+    t('vehicle.whatsappMessage', { title: titulo, url: typeof window !== 'undefined' ? window.location.href : '' })
   );
   const whatsappUrl = telefonoWhatsApp ? `https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}` : null;
 
@@ -47,7 +49,7 @@ export function DetallePage() {
         className="flex items-center gap-2 text-text-muted hover:text-primary mb-6 transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />
-        Volver al catálogo
+        {t('vehicle.backToCatalog')}
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -64,13 +66,13 @@ export function DetallePage() {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-text-muted">
-                  Sin imagen
+                  {t('vehicle.noImage')}
                 </div>
               )}
               {vehiculo.destacado && (
                 <span className="absolute top-4 right-4 bg-primary text-white text-sm px-3 py-1 rounded-full flex items-center gap-1">
                   <Star className="w-4 h-4" />
-                  Destacado
+                  {t('vehicle.featured')}
                 </span>
               )}
             </div>
@@ -95,9 +97,9 @@ export function DetallePage() {
           {/* Descripción */}
           <Card>
             <CardContent>
-              <h2 className="font-semibold text-lg text-text mb-4">Descripción</h2>
+              <h2 className="font-semibold text-lg text-text mb-4">{t('vehicle.description')}</h2>
               <p className="text-text-muted whitespace-pre-line">
-                {vehiculo.descripcion || 'Sin descripción disponible.'}
+                {vehiculo.descripcion || t('vehicle.noDescription')}
               </p>
             </CardContent>
           </Card>
@@ -105,13 +107,13 @@ export function DetallePage() {
           {/* Detalles del vehículo */}
           <Card>
             <CardContent>
-              <h2 className="font-semibold text-lg text-text mb-4">Características</h2>
+              <h2 className="font-semibold text-lg text-text mb-4">{t('vehicle.features')}</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {vehiculo.anio && (
                   <div className="flex items-center gap-2 text-text-muted">
                     <Calendar className="w-5 h-5 text-primary" />
                     <div>
-                      <p className="text-xs text-text-muted">Año</p>
+                      <p className="text-xs text-text-muted">{t('vehicle.year')}</p>
                       <p className="font-medium text-text">{vehiculo.anio}</p>
                     </div>
                   </div>
@@ -119,7 +121,7 @@ export function DetallePage() {
                 <div className="flex items-center gap-2 text-text-muted">
                   <Gauge className="w-5 h-5 text-primary" />
                   <div>
-                    <p className="text-xs text-text-muted">Kilometraje</p>
+                    <p className="text-xs text-text-muted">{t('vehicle.mileage')}</p>
                     <p className="font-medium text-text">{formatearKilometraje(vehiculo.kilometraje)}</p>
                   </div>
                 </div>
@@ -138,7 +140,7 @@ export function DetallePage() {
                 {formatearPrecio(vehiculo.precio, vehiculo.moneda)}
               </p>
               <p className="text-xs text-text-muted mt-2">
-                Publicado el {formatearFecha(vehiculo.fechaPublicacion)}
+                {t('vehicle.publishedOn', { date: formatearFecha(vehiculo.fechaPublicacion) })}
               </p>
             </CardContent>
           </Card>
@@ -169,10 +171,9 @@ export function DetallePage() {
                     className="flex items-center gap-3 p-3 bg-background rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <MessageCircle className="w-5 h-5 text-primary" />
-                    <span className="text-text">WhatsApp</span>
+                    <span className="text-text">{t('vehicle.whatsapp')}</span>
                   </a>
                 )}
-
                 {vehiculo.contacto?.email && (
                   <a
                     href={`mailto:${vehiculo.contacto.email}`}
@@ -185,7 +186,7 @@ export function DetallePage() {
 
                 {!tieneContacto && (
                   <p className="text-text-muted text-sm text-center py-4">
-                    Información de contacto no disponible
+                    {t('vehicle.contactNotAvailable')}
                   </p>
                 )}
               </div>
@@ -193,6 +194,6 @@ export function DetallePage() {
           </Card>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

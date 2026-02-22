@@ -7,6 +7,16 @@
 // ==================== Vendedor/Concesionaria ====================
 
 /**
+ * DTO para listar concesionarias en filtros
+ */
+export interface ConcesionariaDto {
+  /** ID de la concesionaria */
+  id: string;
+  /** Nombre comercial */
+  nombre: string;
+}
+
+/**
  * Información resumida del vendedor (concesionaria)
  * Fuente: VendedorResumenDto.cs
  */
@@ -138,6 +148,8 @@ export interface FiltrosVehiculo extends PaginacionParams {
   marca?: string;
   /** Filtro por modelo */
   modelo?: string;
+  /** Filtro por concesionaria */
+  concesionariaId?: string;
   /** Año mínimo */
   anioDesde?: number;
   /** Año máximo */

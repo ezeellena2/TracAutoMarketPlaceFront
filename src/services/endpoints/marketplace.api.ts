@@ -4,6 +4,7 @@ import type {
   PublicacionPublicaDetalleDto,
   ListaPaginada,
   FiltrosVehiculo,
+  ConcesionariaDto,
 } from '@/shared/types/api';
 
 const BASE_URL = 'marketplace';
@@ -37,6 +38,9 @@ export const marketplaceApi = {
     }
     if (filtros?.modelo) {
       params.append('modelo', filtros.modelo);
+    }
+    if (filtros?.concesionariaId) {
+      params.append('concesionariaId', filtros.concesionariaId);
     }
     // Backend usa anioMinimo/anioMaximo
     if (filtros?.anioDesde) {
@@ -78,6 +82,17 @@ export const marketplaceApi = {
       `${BASE_URL}/vehiculos/${publicacionId}`
     );
     return response.data;
+  },
+
+  /**
+   * Obtiene la lista de concesionarias disponibles
+   * GET /api/public/v1/marketplace/concesionarias
+   */
+  obtenerConcesionarias: async (): Promise<ConcesionariaDto[]> => {
+    const response = await publicApiClient.get<ListaPaginada<ConcesionariaDto>>(
+      `${BASE_URL}/concesionarias?tamanoPagina=50` // Traer suficientes opciones
+    );
+    return response.data.items;
   },
 };
 
